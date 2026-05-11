@@ -30,7 +30,7 @@ files = [f for f in os.listdir("/sd") if f.lower().endswith(".wav") and not f.st
 files.sort()
 current_file_idx = 0
 
-print("Starting mode: Constantly playing, crying when dry.")
+print("Starting mode: Constantly playing, AGGRESSIVE crying when dry.")
 
 while True:
     f = open("/sd/" + files[current_file_idx], "rb")
@@ -38,19 +38,23 @@ while True:
     i2s.play(wav)
     
     while i2s.playing:
-        if not is_wet()ËË          # Crying mode: Randomly adjust playback rate or stutter
-            # We change the sample_rate on the fly to distort pitch/speed
-            if random.random() > 0.5:
-                wav.sample_rate = random.randint(11000, 16000)
-            else:
-                wav.sample_rate = random.randint(22000, 32000)
-            time.sleep(0.1)
+        if not is_wet():
+            # AGGRESSIVE crying mode:
+            # 1. Massive pitch shifts
+            # 2. Frequent abrupt pauses/stutters
+            wav.sample_rate = random.randint(8000, 44100)
+            
+            if random.random() > 0.4:
+                i2s.pause()
+                time.sleep(random.uniform(0.05, 0.2))
+                i2s.resume()
+                
+            time.sleep(random.uniform(0.05, 0.15))
         else:
-            # Normal mode: Set to stable rate
+            # Normal mode
             if wav.sample_rate != 22050:
                 wav.sample_rate = 22050
             time.sleep(0.5)
             
-    # Move to next track
     current_file_idx = (current_file_idx + 1) % len(files)
     f.close()
