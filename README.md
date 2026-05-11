@@ -1,43 +1,27 @@
-# 2026 Plant Monitor - "The Cry for Water"
+# Blue Melody: Plant Monitor
 
-Project built for **Metro ESP32-S2** using a capacitive moisture sensor.
+A moisture-responsive audio player that keeps your plants entertained. When the soil is moist, it plays a sequential playlist of music. When the soil is dry, the audio stops.
 
-## Audio Behavior
-- **Wet (>20%)**: Normal high-quality MP3 playback.
-- **Dry (<20%)**: "Crying" effect via rapid volume oscillation, EQ randomization, and stuttering.
+## Features
+- **Moisture-Responsive Playback:** Uses an analog moisture sensor to toggle audio.
+- **Sequential Playlist:** Cycles through all `.wav` files found on the SD card.
+- **High-Performance Audio:** Optimized I2S playback (PCM5102) for smooth, high-quality output without CPU stuttering.
+- **Dedicated Player Architecture:** Streamlined for audio-only performance to eliminate SPI bus interference.
 
-## Wiring Summary (Your Setup)
+## Hardware Components
+- **Microcontroller:** ESP32-S2 Metro
+- **Audio DAC:** PCM5102 I2S DAC Breakout
+- **Sensor:** Monk Makes Plant Monitor (Analog output connected to A0)
+- **Storage:** MicroSD Card (SPI interface)
+- **Speaker:** Generic 3W speaker connected to PCM5102 LOUT/ROUT
 
-### ST7735 TFT & SD Card
-| Pin Label | Metro ESP32-S2 Pin | Color |
-| :--- | :--- | :--- |
-| VCC | 3.3V | Red |
-| GND | GND | Black |
-| SCK | SCK | Yellow |
-| MOSI | MO | Green |
-| MISO | MISO | White |
-| TFT_CS | Pin 10 | Blue |
-| SD_CS | Pin 11 | Grey |
-| DC / RS | Pin 9 | Purple |
-| RESET | Pin 5 | Brown |
+## Setup Requirements
+- **CircuitPython:** 10.x
+- **Audio Files:** Files must be `.wav`, encoded as **16-bit PCM Mono** at **22,050Hz** or **32,000Hz** for optimal stability.
+- **Pin Mapping:**
+  - **I2S:** BCK=13, WSEL=12, DIN=A5
+  - **SD Card:** Standard SPI (SCK, MOSI, MISO) + CS=IO11
+  - **Moisture Sensor:** A0
 
-### PCM5102 Audio DAC (I2S)
-| Pin Label | Metro ESP32-S2 Pin | Notes |
-| :--- | :--- | :--- |
-| BCK | Pin 6 | Bit Clock |
-| DIN | SDA (GPIO 8) | Data In |
-| LCK | SCL (GPIO 9) | **CONFLICT** (Shared with TFT DC) |
-
-> **⚠️ PIN CONFLICT:** Your wiring uses **GPIO 9** for both the Display DC and the Audio LCK. If the screen is blank or audio is silent, move the **LCK** wire to **Pin 12** and update the `#define I2S_LRC` in the code.
-
-### Monk Makes Plant Monitor
-| Pin Label | Metro ESP32-S2 Pin | Notes |
-| :--- | :--- | :--- |
-| Up Arrow (↑) | Pin 14 | TX -> ESP32 RX |
-| Down Arrow (↓) | Pin 15 | RX -> ESP32 TX |
-| Graph (~) | A0 | Analog Moisture (Alternative) |
-
-## Library Requirements
-- **ESP32-audioI2S**
-- **Adafruit ST7735 and ST7789 Library**
-- **Adafruit GFX**
+## Git Setup
+The project is initialized as a Git repository tracking the core logic and configuration files.
